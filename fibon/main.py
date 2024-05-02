@@ -28,7 +28,7 @@ def getfib(n):
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-
+        print(self.path)
         if self.path == '/':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -55,7 +55,17 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(content)
             
         
-
+        elif self.path[1:].isdigit():
+            print("got a number")
+            number = int(self.path[1:])
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            #set the current number to the global number
+            #the next number in the sequence is the prev + current
+            content = '<html><body style="background: #202020"><p style="color:antiquewhite; margin: auto; padding: 20% 20%; font-size: 10vw;; ">' +  str(getfib(number)) + '</p></body></html>' 
+            content = content.encode("UTF8")
+            self.wfile.write(content)
 
 
 httpd = HTTPServer(('localhost',8080),Handler)
