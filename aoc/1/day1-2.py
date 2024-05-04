@@ -6,6 +6,11 @@ also count as valid "digits".
 """
 
 
+'''
+Currently not working think I've got too deep in regex - will come back 
+
+'''
+
 import re
 
 
@@ -14,34 +19,46 @@ string_numbers = ['one','two','three','four','five','six','seven','eight','nine'
 
 
 #to solve https://adventofcode.com/2023/day/1 part two
-file = open('demo.txt', 'r')
+file = open('input.txt', 'r')
 Lines = file.readlines()
  
 count = 0
 total = 0
 # Strips the newline character
 for line in Lines:
+    print(line)
     count += 1
     i = 0
-    print("-----")
-    print(line.strip())
     while i < len(string_numbers):
-        # (one|two|three|four|five|six|seven|eight|nine) matches in order but how to swap..
-        #bug with eightwo because two is matched before eight the t is chopped off eight should match eight as it comes first...
-        #print("checking for " + string_numbers[i])
-        line = re.sub("("+string_numbers[i]+ ")",str(i+1),line)
-        #print("swapped: " + string_numbers[i] + " for " + str(i+1)) 
+        #make a tuple of strings of numbers and other things in the line with regex
+        line_num = re.split(".*?(one|two|three|four|five|six|seven|eight|nine)", line )
+
+        for match in line_num:
+            #Check we've got a match that's a number as a string
+            if(re.search(".*?(one|two|three|four|five|six|seven|eight|nine)",match)):
+
+                j = 0 
+                while j < len(string_numbers):
+                    #replace the string number with a numeric one using the index of string_numbers
+                    if(match == string_numbers[j]):
+                        line = line.replace(match, str(j+1))
+                    j+=1
         i+=1
-    print(line.strip())
+    #remove anything left that isn't a number    
     numbers = re.sub("[^0-9]","",line) 
-    print(numbers)
-    #print(line.strip())
+
+    #get the length so we can splice the first and last numbers
     length = len(numbers)
     first = numbers[:1]
     last = numbers[(length-1):]
+    
+    #calculate the value and convert it to an into to be added to the total
     val = first +last 
     value = int(val)
     total = total + value
     print(val)
     print("running total: " + str(total))
+
+
+#Print the total
 print(total)
